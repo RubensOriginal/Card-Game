@@ -37,7 +37,7 @@ public class CardView extends Button implements PropertyChangeListener{
 		if (card.isFacedUp()) {
 			this.setGraphic(ImageFactory.getInstance().createImage(card.getImageId()));
 		} else {
-			this.setGraphic(ImageFactory.getInstance().createImage("imgBck"));
+			this.setGraphic(ImageFactory.getInstance().createImage("/cards/back.jpg"));
 		}		
 	}
 }

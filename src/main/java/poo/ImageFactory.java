@@ -56,8 +56,10 @@ public class ImageFactory {
 		}
 
 		ImageView imgv = new ImageView(img);
-		imgv.setFitHeight(307);
-		imgv.setFitWidth(210);
+		// imgv.setFitHeight(307);
+		// imgv.setFitWidth(210);
+		imgv.setFitHeight(307/4);
+		imgv.setFitWidth(210/4);
 		return imgv;
 	}
 }

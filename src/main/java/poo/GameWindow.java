@@ -35,7 +35,7 @@ public class GameWindow extends Application implements GameListener {
 		sd1.setContent(deckJ1);
 		grid.add(sd1, 0, 0);
 
-		PlacarView placar = new PlacarView();
+		FieldView placar = new FieldView();
 		grid.add(placar, 0, 1);
 
 		Button butClean = new Button("Clean");
