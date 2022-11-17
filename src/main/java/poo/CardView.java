@@ -11,7 +11,7 @@ public class CardView extends Button implements PropertyChangeListener{
 	private CardViewListener observer;
 
 	public CardView(Card aCard) {
-		super("", ImageFactory.getInstance().createImage("imgBck"));
+		super("", ImageFactory.getInstance().createImage(aCard.getImageId()));
 
 		card = aCard;
 		card.addPropertyChangeListener(this);

@@ -9,19 +9,31 @@ import java.util.Random;
 public class CardDeck {
 	public static final int NCARDS = 6;
 	private List<Card> cartas;
+
+	private StackCard stack;
+
 	private Card selected;
 	private List<GameListener> observers;
 
 	public CardDeck() {
-		cartas = new ArrayList<>(NCARDS);
+		cartas = new ArrayList<>(6);
+
+		stack = new StackCard();
+		stack.buildStackCard();
+
 		selected = null;
-		Random r = new Random();
-		for (int i = 0; i < NCARDS; i++) {
-			int n = r.nextInt(10) + 1;
-			Card c = new Card("C" + n, "img" + n, n);
-			c.flip();
-			cartas.add(c);
-		}
+
+		for (int i = 0; i < 5; i++)
+			cartas.add(stack.pop());
+
+//		Random r = new Random();
+//		for (int i = 0; i < NCARDS; i++) {
+//			int n = r.nextInt(10) + 1;
+//			Card c = new Card("C" + n, "img" + n, n);
+//			c.flip();
+//			cartas.add(c);
+//		}
+
 		observers = new LinkedList<>();
 	}
 
