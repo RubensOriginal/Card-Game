@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class Card {
+
 	private String id;
 	private String imageId;
 	private int value;
