@@ -54,6 +54,13 @@ public class FieldView extends GridPane implements GameListener {
 			this.add(card, i, 1);
 		}
 
+		topGraveyard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
+		topGraveyardView = new CardView(topGraveyard);
+		this.add(topGraveyardView, 5,0);
+
+
+		CardView cardStackView = new CardView(new SpecialCard("stack_card", "/cards/back.jpg", 0));
+		this.add(cardStackView, 5,1);
 
 
 

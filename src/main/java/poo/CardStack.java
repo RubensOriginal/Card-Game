@@ -1,16 +1,15 @@
 package poo;
 
-import javax.naming.SizeLimitExceededException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
-public class StackCard {
+public class CardStack {
 
 	private Stack<Card> stack;
 
-	public StackCard() {
+	public CardStack() {
 		stack = new Stack<>();
 	}
 
