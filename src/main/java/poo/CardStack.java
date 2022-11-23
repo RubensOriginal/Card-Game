@@ -25,6 +25,10 @@ public class CardStack {
 		return stack.isEmpty();
 	}
 
+	public Card getPeek() {
+		return stack.peek();
+	}
+
 	public void buildStackCard() {
 		if (!stack.empty())
 			throw new RuntimeException("INVALID_STACK_BUILD_PROCESS");
