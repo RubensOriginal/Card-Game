@@ -50,12 +50,16 @@ public class ImageFactory {
 	public ImageView createImage(String imgId) {
 		Image img = images.get(imgId);
 		if (img == null) {
-//			img = new Image(id2File(imgId));
-			img = new Image(getClass().getResourceAsStream(id2File(imgId)));
+			// img = new Image("/cards/4031928.jpg");
+			img = new Image(getClass().getResourceAsStream(imgId));
 			images.put(imgId, img);
 		}
 
 		ImageView imgv = new ImageView(img);
+		// imgv.setFitHeight(307);
+		// imgv.setFitWidth(210);
+		imgv.setFitHeight(307/4);
+		imgv.setFitWidth(210/4);
 		return imgv;
 	}
 }

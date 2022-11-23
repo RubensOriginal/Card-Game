@@ -3,17 +3,18 @@ package poo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class Card {
+public abstract class Card {
+
 	private String id;
-	private String imageId;
+	private String imageUrl;
 	private int value;
 	private boolean faceUp;
 	private final PropertyChangeSupport pcs;
 
-	public Card(String anId, String anImageId, int val) {
-		id = anId;
-		imageId = anImageId;
-		value = val;
+	public Card(String id, String imageUrl, int value) {
+		this.id = id;
+		this.imageUrl = imageUrl;
+		this.value = value;
 		faceUp = true;
 		pcs = new PropertyChangeSupport(this);
 	}
@@ -23,7 +24,7 @@ public class Card {
 	}
 
 	public String getImageId() {
-		return imageId;
+		return imageUrl;
 	}
 
 	public int getValue() {

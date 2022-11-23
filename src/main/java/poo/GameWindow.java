@@ -27,26 +27,29 @@ public class GameWindow extends Application implements GameListener {
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(25, 25, 25, 25));
+		grid.setPadding(new Insets(10, 10, 10, 10));
 
 		DeckView deckJ1 = new DeckView(1);
 		ScrollPane sd1 = new ScrollPane();
-		sd1.setPrefSize(1024, 256);
+		// sd1.setPrefSize(1024, 256);
 		sd1.setContent(deckJ1);
 		grid.add(sd1, 0, 0);
 
-		PlacarView placar = new PlacarView();
+		FieldView placar = new FieldView(); // Field Player Up
 		grid.add(placar, 0, 1);
 
-		Button butClean = new Button("Clean");
-		grid.add(butClean, 1, 1);
-		butClean.setOnAction(e -> Game.getInstance().removeSelected());
+		FieldView placar2 = new FieldView(); // Field Player Down
+		grid.add(placar2, 0, 2);
+
+//		Button butClean = new Button("Clean");
+//		grid.add(butClean, 1, 1);
+//		butClean.setOnAction(e -> Game.getInstance().removeSelected());
 
 		DeckView deckJ2 = new DeckView(2);
 		ScrollPane sd2 = new ScrollPane();
-		sd2.setPrefSize(1024, 256);
+		// sd2.setPrefSize(1024, 256);
 		sd2.setContent(deckJ2);
-		grid.add(sd2, 0, 2);
+		grid.add(sd2, 0, 3);
 
 		Scene scene = new Scene(grid);
 
