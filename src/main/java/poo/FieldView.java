@@ -3,6 +3,7 @@ package poo;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
+import poo.CardView.CardType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,21 +48,21 @@ public class FieldView extends GridPane implements GameListener {
 		this.setPadding(new Insets(25, 25, 25, 25));
 
 		for (int i = 0; i < 5; i++) {
-			CardView card = new CardView(monsterNullCard);
+			CardView card = new CardView(monsterNullCard, CardType.NULLCARD);
 			monsterCardsView.add(card);
 			this.add(card, i, 0);
 
-			card = new CardView(specialNullCard);
+			card = new CardView(specialNullCard, CardType.NULLCARD);
 			specialCardsView.add(card);
 			this.add(card, i, 1);
 		}
 
 		topGraveyard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
-		topGraveyardView = new CardView(topGraveyard);
+		topGraveyardView = new CardView(topGraveyard, CardType.NULLCARD);
 		this.add(topGraveyardView, 5,0);
 
 
-		CardView cardStackView = new CardView(new SpecialCard("stack_card", "/cards/back.jpg", 0));
+		CardView cardStackView = new CardView(new SpecialCard("stack_card", "/cards/back.jpg", 0), CardType.STACKCARD);
 		this.add(cardStackView, 5,1);
 
 
@@ -102,9 +103,9 @@ public class FieldView extends GridPane implements GameListener {
 			
 
 			if (field.getMonsterCards().size() > i) {
-				card = new CardView(field.getMonsterCards().get(i));
+				card = new CardView(field.getMonsterCards().get(i), CardType.FIELDCARD);
 			} else {
-				card = new CardView(monsterNullCard);
+				card = new CardView(monsterNullCard, CardType.NULLCARD);
 			}
 			// monsterCardView.add(card);
 
@@ -114,9 +115,9 @@ public class FieldView extends GridPane implements GameListener {
 			newMonsterCardsView.add(card);
 
 			if (field.getSpecialCards().size() > i) {
-				card = new CardView(field.getSpecialCards().get(i));
+				card = new CardView(field.getSpecialCards().get(i), CardType.FIELDCARD);
 			} else {
-				card = new CardView(specialNullCard);
+				card = new CardView(specialNullCard, CardType.NULLCARD);
 			}
 
 			// specialCardView.add(card);

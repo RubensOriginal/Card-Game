@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
+import poo.CardView.CardType;
 
 public class DeckView extends HBox implements CardViewListener, GameListener {
 	private int jogador;
@@ -26,7 +27,7 @@ public class DeckView extends HBox implements CardViewListener, GameListener {
 		cDeck.addGameListener(this);
 
 		for (Card card : cDeck.getCards()) {
-			CardView cv = new CardView(card);
+			CardView cv = new CardView(card, CardType.DECKCARD);
 			cv.setCardViewObserver(this);
 			this.getChildren().add(cv);
 		}

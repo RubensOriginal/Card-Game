@@ -10,12 +10,20 @@ public class CardView extends Button implements PropertyChangeListener{
 	private CardView thisCardView;
 	private CardViewListener observer;
 
-	public CardView(Card aCard) {
+	private CardType cardType;
+
+	public enum CardType {
+		DECKCARD, FIELDCARD, GRAVEYARDCARD, NULLCARD, STACKCARD
+	}
+
+	public CardView(Card aCard, CardType cardType) {
 		super("", ImageFactory.getInstance().createImage(aCard.getImageId()));
 
 		card = aCard;
 		card.addPropertyChangeListener(this);
 		thisCardView = this;
+
+		this.cardType = cardType;
 
 		this.setOnAction(e -> {
 			if (observer != null) {
