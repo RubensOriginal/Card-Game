@@ -35,10 +35,10 @@ public class GameWindow extends Application implements GameListener {
 		sd1.setContent(deckJ1);
 		grid.add(sd1, 0, 0);
 
-		FieldView placar = new FieldView(Game.getInstance().getFieldJ1()); // Field Player Up
+		FieldView placar = new FieldView(Game.getInstance().getFieldJ1(), 1); // Field Player Up
 		grid.add(placar, 0, 1);
 
-		FieldView placar2 = new FieldView(Game.getInstance().getFieldJ2()); // Field Player Down
+		FieldView placar2 = new FieldView(Game.getInstance().getFieldJ2(), 2); // Field Player Down
 		grid.add(placar2, 0, 2);
 
 //		Button butClean = new Button("Clean");

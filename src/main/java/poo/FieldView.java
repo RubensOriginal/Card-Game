@@ -2,7 +2,6 @@ package poo;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
@@ -11,24 +10,29 @@ import java.util.List;
 public class FieldView extends GridPane implements GameListener {
 	// private TextField ptsJ1, ptsJ2;
 
-	private Field field;
+	// private Field field;
+	private int player;
 
 	private Card monsterNullCard;
 	private Card specialNullCard;
 	private Card graveyardNullCard;
 
-	private List<CardView> monsterCardView;
-	private List<CardView> specialCardView;
+	private List<CardView> monsterCardsView;
+	private List<CardView> specialCardsView;
 
 	private Card topGraveyard;
 	private CardView topGraveyardView;
 
-	public FieldView(Field field) {
-		this.field = field;
+	public FieldView(Field field, int player) {
+		// this.field = field;
+		this.player = player;
 
 		monsterNullCard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
 		specialNullCard = new MagicCard("special_null_card", "/cards/back.jpg", 0);
 		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/back.jpg", 0, 0, 0, 0);
+
+		monsterCardsView = new ArrayList<>(5);
+		specialCardsView = new ArrayList<>(5);
 
 //		for (int i = 0; i < 5; i++) {
 //			monsterCards.add(monsterNullCard);
@@ -44,11 +48,11 @@ public class FieldView extends GridPane implements GameListener {
 
 		for (int i = 0; i < 5; i++) {
 			CardView card = new CardView(monsterNullCard);
-			// monsterCardView.add(card);
+			monsterCardsView.add(card);
 			this.add(card, i, 0);
 
 			card = new CardView(specialNullCard);
-			// specialCardView.add(card);
+			specialCardsView.add(card);
 			this.add(card, i, 1);
 		}
 
@@ -80,21 +84,53 @@ public class FieldView extends GridPane implements GameListener {
 	@Override
 	public void notify(GameEvent event) {
 
+		Field field;
+
+		List<CardView> newMonsterCardsView = new ArrayList<>(5);
+		List<CardView> newSpecialCardsView = new ArrayList<>(5);
+
+		if (player == 1) {
+			field = Game.getInstance().getFieldJ1();
+		} else {
+			field = Game.getInstance().getFieldJ2();
+		}
+
 		for (int i = 0; i < 5; i++) {
-			CardView card = new CardView(field.getMonsterCards().get(i));
+
+			CardView card;
+
+			
+
+			if (field.getMonsterCards().size() > i) {
+				card = new CardView(field.getMonsterCards().get(i));
+			} else {
+				card = new CardView(monsterNullCard);
+			}
 			// monsterCardView.add(card);
 
-			getChildren().remove(i,0);
+			getChildren().remove(monsterCardsView.get(i));
 
 			this.add(card, i, 0);
+			newMonsterCardsView.add(card);
 
-			card = new CardView(field.getMonsterCards().get(i));
+			if (field.getSpecialCards().size() > i) {
+				card = new CardView(field.getSpecialCards().get(i));
+			} else {
+				card = new CardView(specialNullCard);
+			}
+
 			// specialCardView.add(card);
 
-			getChildren().remove(i,1);
-
+			getChildren().remove(specialCardsView.get(i));
+ 
 			this.add(card, i, 1);
+			newSpecialCardsView.add(card);
 		}
+
+		monsterCardsView = newMonsterCardsView;
+		specialCardsView = newSpecialCardsView;
+
+		
 //		ptsJ1.setText("" + Game.getInstance().getPtsJ1());
 //		ptsJ2.setText("" + Game.getInstance().getPtsJ2());
 	}
