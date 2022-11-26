@@ -1,5 +1,6 @@
 package poo;
 
+import javax.naming.SizeLimitExceededException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public class Game {
 	private static Game game = new Game();
 	private int ptsJ1, ptsJ2;
 	private CardDeck deckJ1, deckJ2;
+	private Field fieldJ1, fieldJ2;
 	private int player;
 	private int jogadas;
 	private List<GameListener> observers;
@@ -20,6 +22,8 @@ public class Game {
 		ptsJ2 = 0;
 		deckJ1 = new CardDeck();
 		deckJ2 = new CardDeck();
+		fieldJ1 = new Field(null);
+		fieldJ2 = new Field(null);
 		player = 1;
 		jogadas = CardDeck.NCARDS;
 		observers = new LinkedList<>();
@@ -48,6 +52,14 @@ public class Game {
 		return deckJ2;
 	}
 
+	public Field getFieldJ1() { return fieldJ1; }
+
+	public Field getFieldJ2() { return fieldJ2; }
+
+	public int getPlayer() {
+		return player;
+	}
+
 	public void play(CardDeck deckAcionado) {
 		GameEvent gameEvent = null;
 		if (player == 3) {
@@ -65,30 +77,61 @@ public class Game {
 				}
 			} else {
 				// Vira a carta
-				deckJ1.getSelectedCard().flip();
-				// Proximo jogador
-				nextPlayer();
+				Card J1Card = deckJ1.getSelectedCard();
+				deckJ1.removeSel();
+
+				try {
+					fieldJ1.addCard(J1Card);
+
+					if (J1Card instanceof MonsterCard)
+						nextPlayer();
+				} catch (SizeLimitExceededException e) {
+					// Add an alert here
+					throw new RuntimeException(e);
+				}
+
+				for (var observer : observers) {
+					if (observer instanceof FieldView)
+						observer.notify(gameEvent);
+				}
 			}
 		} else if (deckAcionado == deckJ2) {
 			if (player != 2) {
-				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "2");
+				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "1");
 				for (var observer : observers) {
 					observer.notify(gameEvent);
 				}
 			} else {
 				// Vira a carta
-				deckJ2.getSelectedCard().flip();
-				// Verifica quem ganhou a rodada
-				if (deckJ1.getSelectedCard().getValue() > deckJ2.getSelectedCard().getValue()) {
-					ptsJ1++;
-				} else if (deckJ1.getSelectedCard().getValue() < deckJ2.getSelectedCard().getValue()) {
-					ptsJ2++;
+
+				Card J2Card = deckJ2.getSelectedCard();
+				deckJ2.removeSel();
+
+				try {
+					fieldJ2.addCard(J2Card);
+
+					if (J2Card instanceof MonsterCard) {
+						nextPlayer();
+						nextPlayer();
+					}
+				} catch (SizeLimitExceededException e) {
+					// Add an alert here
+					throw new RuntimeException(e);
 				}
+
+				// deckJ2.getSelectedCard().flip();
+				// // Verifica quem ganhou a rodada
+				// if (deckJ1.getSelectedCard().getValue() > deckJ2.getSelectedCard().getValue()) {
+				// 	ptsJ1++;
+				// } else if (deckJ1.getSelectedCard().getValue() < deckJ2.getSelectedCard().getValue()) {
+				// 	ptsJ2++;
+				// }
+
+
 				for (var observer : observers) {
 					observer.notify(gameEvent);
 				}
 				// Próximo jogador
-				nextPlayer();
 			}
 		}
 	}
