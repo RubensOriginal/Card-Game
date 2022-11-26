@@ -29,9 +29,9 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		// this.field = field;
 		this.player = player;
 
-		monsterNullCard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
-		specialNullCard = new MagicCard("special_null_card", "/cards/back.jpg", 0);
-		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/back.jpg", 0, 0, 0, 0);
+		monsterNullCard = new MonsterCard("null_card", "/cards/monster_card_zone.jpg", 0, 0, 0, 0);
+		specialNullCard = new MagicCard("special_null_card", "/cards/speel_and_trap_card_zone.jpg", 0);
+		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/graveyard.jpg", 0, 0, 0, 0);
 
 		monsterCardsView = new ArrayList<>(5);
 		specialCardsView = new ArrayList<>(5);
@@ -58,7 +58,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 			this.add(card, i, 1);
 		}
 
-		topGraveyard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
+		// topGraveyard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
 		topGraveyardView = new CardView(topGraveyard, CardType.NULLCARD);
 		this.add(topGraveyardView, 5,0);
 		topGraveyardView.setCardViewObserver(this);
@@ -72,6 +72,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 
 
 		Game.getInstance().addGameListener(this);
+		field.addGameListener(this);
 //
 //		ptsJ1 = new TextField();
 //		ptsJ2 = new TextField();
@@ -102,8 +103,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		for (int i = 0; i < 5; i++) {
 
 			CardView card;
-
-			
 
 			if (field.getMonsterCards().size() > i) {
 				card = new CardView(field.getMonsterCards().get(i), CardType.FIELDCARD);
@@ -149,13 +148,29 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		if (cv.getCardType() == CardType.STACKCARD) {
 			try {
 				if (player == 1) {
-					Game.getInstance().getDeckJ1().addCardToDeck();
+					if (Game.getInstance().getPlayer() == 1) {
+						Game.getInstance().getDeckJ1().addCardToDeck();
+					}
 				} else if (player == 2) {
-					Game.getInstance().getDeckJ2().addCardToDeck();
+					if (Game.getInstance().getPlayer() == 2) {
+						Game.getInstance().getDeckJ2().addCardToDeck();
+					}
 				}
 			} catch (DeckSizeException e) {
 				// Adicionar Alerta
 				e.printStackTrace();
+			}
+		} else if (cv.getCardType() == CardType.FIELDCARD) {
+			if (player == 1) {
+				if (Game.getInstance().getPlayer() == 1) {
+					Game.getInstance().getFieldJ1().getGraveyard().push(selectedCard);
+					Game.getInstance().getFieldJ1().removeCard(selectedCard);
+				}
+			} else {
+				if (Game.getInstance().getPlayer() == 2) {
+					Game.getInstance().getFieldJ2().getGraveyard().push(selectedCard);
+					Game.getInstance().getFieldJ2().removeCard(selectedCard);
+				}
 			}
 		}
 

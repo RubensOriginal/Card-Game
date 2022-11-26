@@ -2,6 +2,7 @@ package poo;
 
 import javax.naming.SizeLimitExceededException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Field {
@@ -12,6 +13,8 @@ public class Field {
 	private CardStack graveyard;
 	private CardStack stack;
 
+	private List<GameListener> observers;
+
 	public Field(CardStack stack) {
 		this.stack = stack;
 
@@ -19,6 +22,8 @@ public class Field {
 		specialCards = new ArrayList<>(5);
 
 		graveyard = new CardStack();
+
+		observers = new LinkedList<>();
 	}
 
 	public List<Card> getMonsterCards() {
@@ -31,6 +36,14 @@ public class Field {
 
 	public Card getGraveyardCard() {
 		return graveyard.getPeek();
+	}
+
+	public CardStack getGraveyard() {
+		return graveyard;
+	}
+
+	public void addGameListener(GameListener listener) {
+		observers.add(listener);
 	}
 
 	public void addCard(Card card) throws SizeLimitExceededException {
@@ -47,4 +60,17 @@ public class Field {
 			specialCards.add(card);
 		}
 	}
+
+	public void removeCard(Card card) {
+		if (card instanceof MonsterCard) {
+			monsterCards.remove(card);
+		} else {
+			specialCards.remove(card);
+		}
+
+		for (var observer : observers) {
+			observer.notify(new GameEvent(this, GameEvent.Target.DECK, GameEvent.Action.UPDATEDECK, ""));
+		}
+	}
+
 }

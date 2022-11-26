@@ -56,6 +56,10 @@ public class Game {
 
 	public Field getFieldJ2() { return fieldJ2; }
 
+	public int getPlayer() {
+		return player;
+	}
+
 	public void play(CardDeck deckAcionado) {
 		GameEvent gameEvent = null;
 		if (player == 3) {
@@ -79,8 +83,8 @@ public class Game {
 				try {
 					fieldJ1.addCard(J1Card);
 
-					
-					nextPlayer();
+					if (J1Card instanceof MonsterCard)
+						nextPlayer();
 				} catch (SizeLimitExceededException e) {
 					// Add an alert here
 					throw new RuntimeException(e);
@@ -106,7 +110,10 @@ public class Game {
 				try {
 					fieldJ2.addCard(J2Card);
 
-					nextPlayer();
+					if (J2Card instanceof MonsterCard) {
+						nextPlayer();
+						nextPlayer();
+					}
 				} catch (SizeLimitExceededException e) {
 					// Add an alert here
 					throw new RuntimeException(e);
@@ -125,7 +132,6 @@ public class Game {
 					observer.notify(gameEvent);
 				}
 				// Próximo jogador
-				nextPlayer();
 			}
 		}
 	}
