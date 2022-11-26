@@ -29,17 +29,20 @@ public class GameWindow extends Application implements GameListener {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(10, 10, 10, 10));
 
+		StatusPlayerView statusViewJ1 = new StatusPlayerView(Game.getInstance().getStatusPlayerJ1(), 1);
+		grid.add(statusViewJ1, 0, 0);
+
 		DeckView deckJ1 = new DeckView(1);
 		ScrollPane sd1 = new ScrollPane();
 		// sd1.setPrefSize(1024, 256);
 		sd1.setContent(deckJ1);
-		grid.add(sd1, 0, 0);
+		grid.add(sd1, 0, 1);
 
 		FieldView placar = new FieldView(Game.getInstance().getFieldJ1(), 1); // Field Player Up
-		grid.add(placar, 0, 1);
+		grid.add(placar, 0, 2);
 
 		FieldView placar2 = new FieldView(Game.getInstance().getFieldJ2(), 2); // Field Player Down
-		grid.add(placar2, 0, 2);
+		grid.add(placar2, 0, 3);
 
 //		Button butClean = new Button("Clean");
 //		grid.add(butClean, 1, 1);
@@ -49,7 +52,10 @@ public class GameWindow extends Application implements GameListener {
 		ScrollPane sd2 = new ScrollPane();
 		// sd2.setPrefSize(1024, 256);
 		sd2.setContent(deckJ2);
-		grid.add(sd2, 0, 3);
+		grid.add(sd2, 0, 4);
+
+		StatusPlayerView statusViewJ2 = new StatusPlayerView(Game.getInstance().getStatusPlayerJ2(), 2);
+		grid.add(statusViewJ2, 0, 5);
 
 		Scene scene = new Scene(grid);
 

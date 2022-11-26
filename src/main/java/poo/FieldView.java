@@ -2,6 +2,7 @@ package poo;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import poo.CardView.CardType;
 import poo.exceptions.DeckSizeException;
@@ -68,8 +69,14 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		this.add(cardStackView, 5,1);
 		cardStackView.setCardViewObserver(this);
 
+		Button button = new Button("Próxima Fase");
 
+		this.add(button, 6,1);
 
+		button.setOnAction(e -> {
+			if (player == Game.getInstance().getPlayer())
+				Game.getInstance().nextStage();
+		});
 
 		Game.getInstance().addGameListener(this);
 		field.addGameListener(this);
@@ -148,11 +155,11 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		if (cv.getCardType() == CardType.STACKCARD) {
 			try {
 				if (player == 1) {
-					if (Game.getInstance().getPlayer() == 1) {
+					if (Game.getInstance().getPlayerStage() == 1) {
 						Game.getInstance().getDeckJ1().addCardToDeck();
 					}
 				} else if (player == 2) {
-					if (Game.getInstance().getPlayer() == 2) {
+					if (Game.getInstance().getPlayerStage() == 2) {
 						Game.getInstance().getDeckJ2().addCardToDeck();
 					}
 				}
@@ -162,12 +169,12 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 			}
 		} else if (cv.getCardType() == CardType.FIELDCARD) {
 			if (player == 1) {
-				if (Game.getInstance().getPlayer() == 1) {
+				if (Game.getInstance().getPlayerStage() == 1) {
 					Game.getInstance().getFieldJ1().getGraveyard().push(selectedCard);
 					Game.getInstance().getFieldJ1().removeCard(selectedCard);
 				}
 			} else {
-				if (Game.getInstance().getPlayer() == 2) {
+				if (Game.getInstance().getPlayerStage() == 2) {
 					Game.getInstance().getFieldJ2().getGraveyard().push(selectedCard);
 					Game.getInstance().getFieldJ2().removeCard(selectedCard);
 				}
