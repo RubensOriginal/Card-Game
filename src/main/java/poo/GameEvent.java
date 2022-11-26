@@ -7,11 +7,11 @@ public class GameEvent extends EventObject {
 
 	public enum Target {
 		DECK, GWIN
-	};
+	}
 
 	public enum Action {
-		INVPLAY, MUSTCLEAN, ENDGAME, REMOVESEL
-	};
+		INVPLAY, MUSTCLEAN, ENDGAME, REMOVESEL, UPDATEDECK
+	}
 
 	private Target target;
 	private Action action;

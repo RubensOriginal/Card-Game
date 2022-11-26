@@ -40,6 +40,10 @@ public class CardView extends Button implements PropertyChangeListener{
 		return card;
 	}
 
+	public CardType getCardType() {
+		return cardType;
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (card.isFacedUp()) {

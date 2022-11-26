@@ -1,5 +1,7 @@
 package poo;
 
+import poo.exceptions.DeckSizeException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -66,6 +68,16 @@ public class CardDeck {
 
 	public void addGameListener(GameListener listener) {
 		observers.add(listener);
+	}
+
+	public void addCardToDeck() throws DeckSizeException {
+		if (cartas.size() == 6)
+			throw new DeckSizeException();
+		cartas.add(stack.pop());
+
+		for (var observer : observers) {
+			observer.notify(new GameEvent(this, GameEvent.Target.DECK, GameEvent.Action.UPDATEDECK, ""));
+		}
 	}
 
 }
