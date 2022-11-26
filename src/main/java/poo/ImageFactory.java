@@ -10,6 +10,9 @@ public class ImageFactory {
 	private static ImageFactory imgf = new ImageFactory();
 	private Map<String, Image> images;
 
+	private int cardHeight = 307;
+	private int cardWidth = 210;
+
 	public static ImageFactory getInstance() {
 		return imgf;
 	}
@@ -47,7 +50,7 @@ public class ImageFactory {
 		}
 	}
 
-	public ImageView createImage(String imgId) {
+	public ImageView createImage(String imgId, boolean realSize) {
 		Image img = images.get(imgId);
 		if (img == null) {
 			// img = new Image("/cards/4031928.jpg");
@@ -58,8 +61,13 @@ public class ImageFactory {
 		ImageView imgv = new ImageView(img);
 		// imgv.setFitHeight(307);
 		// imgv.setFitWidth(210);
-		imgv.setFitHeight(307/4);
-		imgv.setFitWidth(210/4);
+		if (realSize) {
+			imgv.setFitHeight(2 * cardHeight);
+			imgv.setFitWidth(2 * cardWidth);
+		} else {
+			imgv.setFitHeight(cardHeight / 4);
+			imgv.setFitWidth(cardWidth / 4);
+		}
 		return imgv;
 	}
 }
