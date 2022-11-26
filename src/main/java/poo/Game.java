@@ -152,6 +152,9 @@ public class Game {
 				stage = GameStages.PREPAREATTACKSTAGE;
 				break;
 			case PREPAREATTACKSTAGE:
+				stage = GameStages.ATTACKSTAGE;
+				if (round == 1)
+					stage = GameStages.PREPAREDEFENCESTAGE;
 				break;
 			case PREPARECOUNTERATACKSTAGE:
 				stage = GameStages.PREPAREATTACKSTAGE;
@@ -161,8 +164,16 @@ public class Game {
 					player = 1;
 				break;
 			case ATTACKSTAGE:
+				stage = GameStages.PREPAREDEFENCESTAGE;
 				break;
 			case PREPAREDEFENCESTAGE:
+				stage = GameStages.BUYCARDSSTAGE;
+				if (player == 1)
+					player = 2;
+				else {
+					player = 1;
+					round++;
+				}
 				break;
 		}
 
