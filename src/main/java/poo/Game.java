@@ -191,11 +191,20 @@ public class Game {
 			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
 			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {
-				selectedCard = cv.getCard();
-				stage = GameStages.ATTACKSTAGETWO;
-				for (var observer : observers) {
-					observer.notify(null);
+
+				MonsterCard monsterCard = (MonsterCard) cv.getCard();
+				if (!monsterCard.isUsed()) {
+					selectedCard = cv.getCard();
+					stage = GameStages.ATTACKSTAGETWO;
+					for (var observer : observers) {
+						observer.notify(null);
+					}
+				} else {
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.MONSTERUSEDPREVIOUSLY, "" + player));
+					}
 				}
+
 			} else {
 				for (var observer : observers) {
 					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "" + player));
@@ -210,10 +219,15 @@ public class Game {
 					int damage = playerCard.getAttack() - otherCard.getAttack();
 					if (getPlayer() == 1) {
 						statusPlayerJ2.reduceLife(damage);
+						fieldJ2.getGraveyard().push(otherCard);
+						fieldJ2.removeCard(otherCard);
 					} else {
 						statusPlayerJ1.reduceLife(damage);
+						fieldJ1.getGraveyard().push(otherCard);
+						fieldJ1.removeCard(otherCard);
 					}
 
+					playerCard.setUsed(true);
 					selectedCard = null;
 					stage = GameStages.ATTACKSTAGE;
 

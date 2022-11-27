@@ -8,6 +8,7 @@ public abstract class Card {
 	private String id;
 	private String imageUrl;
 	private boolean faceUp;
+	private boolean used;
 	private final PropertyChangeSupport pcs;
 
 	public Card(String id, String imageUrl) {
@@ -27,6 +28,14 @@ public abstract class Card {
 
 	public boolean isFacedUp() {
 		return faceUp;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
+
+	public boolean isUsed() {
+		return used;
 	}
 
 	public void flip() {
