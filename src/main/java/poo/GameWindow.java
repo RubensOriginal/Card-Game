@@ -110,6 +110,20 @@ public class GameWindow extends Application implements GameListener {
 					alert.setContentText("Você não pode adicionar mais que um monstro por round.");
 					alert.showAndWait();
 					break;
+				case PRINTDATA:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("PRINT DATA!");
+					alert.setHeaderText(null);
+					alert.setContentText(eg.getArg());
+					alert.showAndWait();
+					break;
+				case INVALIDATTACK:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Você precisa selecionar um monstro do jogador " + eg.getArg() +".");
+					alert.showAndWait();
+					break;
 				case UPDATEDECK:
 				case REMOVESEL:
 					// Esse evento não vem para cá

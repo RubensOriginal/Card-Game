@@ -41,6 +41,9 @@ public class StatusPlayerView extends GridPane implements GameListener {
 				case ATTACKSTAGE:
 					stageText.setText("Estágio Atual: ATAQUE!!!");
 					break;
+				case ATTACKSTAGETWO:
+					stageText.setText("Selecione o monstro que você quer atacar");
+					break;
 				case PREPAREDEFENCESTAGE:
 					stageText.setText("Estágio Atual: Prepare sua Defesa");
 					break;
@@ -73,6 +76,9 @@ public class StatusPlayerView extends GridPane implements GameListener {
 					break;
 				case ATTACKSTAGE:
 					stageText.setText("Estágio Atual: ATAQUE!!!");
+					break;
+				case ATTACKSTAGETWO:
+					stageText.setText("Selecione o monstro que você quer atacar");
 					break;
 				case PREPAREDEFENCESTAGE:
 					stageText.setText("Estágio Atual: Prepare sua Defesa");

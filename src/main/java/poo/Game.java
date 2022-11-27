@@ -22,7 +22,7 @@ public class Game {
 
 	private int numMonstersAdded;
 
-	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, PREPAREDEFENCESTAGE};
+	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, ATTACKSTAGETWO, PREPAREDEFENCESTAGE};
 
 	public static Game getInstance() {
 		if (game == null)
@@ -37,8 +37,8 @@ public class Game {
 		player = 1;
 		numMonstersAdded = 0;
 		stage = GameStages.BUYCARDSSTAGE;
-		statusPlayerJ1 = new StatusPlayer();
-		statusPlayerJ2 = new StatusPlayer();
+		statusPlayerJ1 = new StatusPlayer(1);
+		statusPlayerJ2 = new StatusPlayer(2);
 		deckJ1 = new CardDeck(1);
 		deckJ2 = new CardDeck(2);
 		fieldJ1 = new Field(null);
@@ -134,8 +134,12 @@ public class Game {
 				Card J2Card = deckJ2.getSelectedCard();
 
 				try {
-					if (J2Card instanceof MonsterCard && numMonstersAdded == 1)
-						return; // Retornar alerta
+					if (J2Card instanceof MonsterCard && numMonstersAdded == 1) {
+						for (var observer : observers) {
+							observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.NMONSTERROUND, ""));
+						}
+						return;
+					}
 
 					fieldJ2.addCard(J2Card);
 					deckJ2.removeSel();
@@ -157,6 +161,10 @@ public class Game {
 	}
 
 	public void playField(Field field, CardView cv, int player) {
+//		for (var observer: getObservers()) {
+//			observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.PRINTDATA, (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) + "\n" + (player == getPlayer()) + ""));
+//		}
+
 		if (cv.getCardType() == CardView.CardType.STACKCARD && getStage() == GameStages.BUYCARDSSTAGE) {
 			try {
 				if (getPlayer() == 1 && player == 1) {
@@ -182,37 +190,98 @@ public class Game {
 				}
 			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
-			if (!(cv.getCard() instanceof MonsterCard)) {
+			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {
+				selectedCard = cv.getCard();
+				stage = GameStages.ATTACKSTAGETWO;
 				for (var observer : observers) {
-					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+					observer.notify(null);
+				}
+			} else {
+				for (var observer : observers) {
+					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "" + player));
 				}
 			}
-			if (getPlayer() == player) {
-				selectedCard = cv.getCard();
+		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGETWO) {
+			if (player != getPlayer()) {
+
+				MonsterCard playerCard = (MonsterCard) selectedCard;
+				MonsterCard otherCard = (MonsterCard) cv.getCard();
+				if (playerCard.getAttack() > otherCard.getAttack()) {
+					int damage = playerCard.getAttack() - otherCard.getAttack();
+					if (getPlayer() == 1) {
+						statusPlayerJ2.reduceLife(damage);
+					} else {
+						statusPlayerJ1.reduceLife(damage);
+					}
+
+					selectedCard = null;
+					stage = GameStages.ATTACKSTAGE;
+
+				} else {
+					// Perguntar para o Henrique
+				}
+
+				for (var observer : observers) {
+					observer.notify(null);
+				}
+
+				if (statusPlayerJ1.getLife() == 0) {
+					for (var observer: Game.getInstance().getObservers()) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+					}
+				} else if (statusPlayerJ2.getLife() == 0) {
+					for (var observer: Game.getInstance().getObservers()) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+					}
+				}
+
 			} else {
-				if (selectedCard == null) {
+				if (getPlayer() == 1) {
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "2"));
+					}
+				} else {
 					for (var observer : observers) {
 						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
 					}
-				} else {
-					MonsterCard playerCard = (MonsterCard) selectedCard;
-					MonsterCard otherCard = (MonsterCard) cv.getCard();
-
-					if (playerCard.getAttack() > otherCard.getAttack()) {
-						int damage = playerCard.getAttack() - otherCard.getAttack();
-						statusPlayerJ2.reduceLife(damage);
-
-					} else {
-						// Perguntar para o Henrique
-					}
-
-					for (var observer: observers) {
-						observer.notify(null);
-					}
-
 				}
 			}
 		}
+
+
+//			for (var observer : observers) {
+//				observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+//			}
+//			if (!(cv.getCard() instanceof MonsterCard)) {
+//				for (var observer : observers) {
+//					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+//				}
+//			}
+//			if (getPlayer() == player) {
+//				selectedCard = cv.getCard();
+//			} else {
+//				if (selectedCard == null) {
+//					for (var observer : observers) {
+//						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+//					}
+//				} else {
+//					MonsterCard playerCard = (MonsterCard) selectedCard;
+//					MonsterCard otherCard = (MonsterCard) cv.getCard();
+//
+//					if (playerCard.getAttack() > otherCard.getAttack()) {
+//						int damage = playerCard.getAttack() - otherCard.getAttack();
+//						statusPlayerJ2.reduceLife(damage);
+//
+//					} else {
+//						// Perguntar para o Henrique
+//					}
+//
+//					for (var observer: observers) {
+//						observer.notify(null);
+//					}
+//
+//				}
+//			}
 	}
 
 	public void nextStage() {

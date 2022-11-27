@@ -47,7 +47,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		this.setAlignment(Pos.CENTER);
 		this.setHgap(10);
 		this.setVgap(10);
-		this.setPadding(new Insets(25, 25, 25, 25));
+		this.setPadding(new Insets(15, 15, 15, 15));
 
 		for (int i = 0; i < 5; i++) {
 			CardView card = new CardView(monsterNullCard, CardType.NULLCARD);
