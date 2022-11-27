@@ -12,12 +12,15 @@ public class CardDeck {
 	private List<Card> cartas;
 
 	private CardStack stack;
+	private int player;
 
 	private Card selected;
 	private List<GameListener> observers;
 
-	public CardDeck() {
+	public CardDeck(int player) {
 		cartas = new ArrayList<>(6);
+
+		this.player = player;
 
 		stack = new CardStack();
 		stack.buildStackCard();
@@ -64,6 +67,10 @@ public class CardDeck {
 
 	public Card getSelectedCard() {
 		return selected;
+	}
+
+	public int getPlayer() {
+		return player;
 	}
 
 	public void addGameListener(GameListener listener) {
