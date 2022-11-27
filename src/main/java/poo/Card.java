@@ -7,14 +7,12 @@ public abstract class Card {
 
 	private String id;
 	private String imageUrl;
-	private int value;
 	private boolean faceUp;
 	private final PropertyChangeSupport pcs;
 
-	public Card(String id, String imageUrl, int value) {
+	public Card(String id, String imageUrl) {
 		this.id = id;
 		this.imageUrl = imageUrl;
-		this.value = value;
 		faceUp = true;
 		pcs = new PropertyChangeSupport(this);
 	}
@@ -25,10 +23,6 @@ public abstract class Card {
 
 	public String getImageId() {
 		return imageUrl;
-	}
-
-	public int getValue() {
-		return value;
 	}
 
 	public boolean isFacedUp() {

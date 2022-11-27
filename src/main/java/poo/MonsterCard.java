@@ -6,8 +6,8 @@ public class MonsterCard extends Card{
 	private int attack;
 	private int defence;
 
-	public MonsterCard(String id, String imageUrl, int value, int level, int attack, int defence) {
-		super(id, imageUrl, value);
+	public MonsterCard(String id, String imageUrl, int level, int attack, int defence) {
+		super(id, imageUrl);
 		this.level = level;
 		this.attack = attack;
 		this.defence = defence;
