@@ -13,7 +13,7 @@ import java.util.List;
 public class FieldView extends GridPane implements CardViewListener, GameListener {
 	// private TextField ptsJ1, ptsJ2;
 
-	// private Field field;
+	private Field field;
 	private int player;
 
 	private Card monsterNullCard;
@@ -27,7 +27,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 	private CardView topGraveyardView;
 
 	public FieldView(Field field, int player) {
-		// this.field = field;
+		this.field = field;
 		this.player = player;
 
 		monsterNullCard = new MonsterCard("null_card", "/cards/monster_card_zone.jpg", 0, 0, 0, 0);
@@ -152,34 +152,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		CardView cv = event.getCardView();
 		Card selectedCard = cv.getCard();
 
-		if (cv.getCardType() == CardType.STACKCARD) {
-			try {
-				if (player == 1) {
-					if (Game.getInstance().getPlayerStage() == 1) {
-						Game.getInstance().getDeckJ1().addCardToDeck();
-					}
-				} else if (player == 2) {
-					if (Game.getInstance().getPlayerStage() == 2) {
-						Game.getInstance().getDeckJ2().addCardToDeck();
-					}
-				}
-			} catch (DeckSizeException e) {
-				// Adicionar Alerta
-				e.printStackTrace();
-			}
-		} else if (cv.getCardType() == CardType.FIELDCARD) {
-			if (player == 1) {
-				if (Game.getInstance().getPlayerStage() == 1) {
-					Game.getInstance().getFieldJ1().getGraveyard().push(selectedCard);
-					Game.getInstance().getFieldJ1().removeCard(selectedCard);
-				}
-			} else {
-				if (Game.getInstance().getPlayerStage() == 2) {
-					Game.getInstance().getFieldJ2().getGraveyard().push(selectedCard);
-					Game.getInstance().getFieldJ2().removeCard(selectedCard);
-				}
-			}
-		}
+		Game.getInstance().playField(field, cv, player);
 
 		// cDeck.setSelectedCard(selectedCard);
 		// Game.getInstance().play(cDeck);

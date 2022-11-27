@@ -1,5 +1,7 @@
 package poo;
 
+import poo.exceptions.DeckSizeException;
+
 import javax.naming.SizeLimitExceededException;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,11 +18,12 @@ public class Game {
 	private int round;
 	private int player;
 	private GameStages stage;
+	private Card selectedCard;
 
 	private int numMonstersAdded;
 
 	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, PREPAREDEFENCESTAGE};
-	
+
 	public static Game getInstance() {
 		if (game == null)
 			game = new Game();
@@ -36,8 +39,8 @@ public class Game {
 		stage = GameStages.BUYCARDSSTAGE;
 		statusPlayerJ1 = new StatusPlayer();
 		statusPlayerJ2 = new StatusPlayer();
-		deckJ1 = new CardDeck();
-		deckJ2 = new CardDeck();
+		deckJ1 = new CardDeck(1);
+		deckJ2 = new CardDeck(2);
 		fieldJ1 = new Field(null);
 		fieldJ2 = new Field(null);
 		playerStage = 1;
@@ -92,6 +95,10 @@ public class Game {
 		return stage;
 	}
 
+	public List<GameListener> getObservers() {
+		return new LinkedList<>(observers);
+	}
+
 	public void play (CardDeck deckAcionado) {
 		GameEvent gameEvent = null;
 		if (player == 1) {
@@ -99,8 +106,12 @@ public class Game {
 				Card J1Card = deckJ1.getSelectedCard();
 
 				try {
-					if (J1Card instanceof MonsterCard && numMonstersAdded == 1)
-						return; // Retornar alerta
+					if (J1Card instanceof MonsterCard && numMonstersAdded == 1) {
+						for (var observer : observers) {
+							observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.NMONSTERROUND, ""));
+						}
+						return;
+					}
 
 					fieldJ1.addCard(J1Card);
 					deckJ1.removeSel();
@@ -126,8 +137,8 @@ public class Game {
 					if (J2Card instanceof MonsterCard && numMonstersAdded == 1)
 						return; // Retornar alerta
 
-					fieldJ1.addCard(J2Card);
-					deckJ1.removeSel();
+					fieldJ2.addCard(J2Card);
+					deckJ2.removeSel();
 					if (J2Card instanceof MonsterCard)
 						numMonstersAdded++;
 					stage = GameStages.PREPARECOUNTERATACKSTAGE;
@@ -145,6 +156,65 @@ public class Game {
 		}
 	}
 
+	public void playField(Field field, CardView cv, int player) {
+		if (cv.getCardType() == CardView.CardType.STACKCARD && getStage() == GameStages.BUYCARDSSTAGE) {
+			try {
+				if (getPlayer() == 1 && player == 1) {
+					getDeckJ1().addCardToDeck();
+				} else if (getPlayer() == 2 && player == 2) {
+					getDeckJ2().addCardToDeck();
+				}
+			} catch (DeckSizeException e) {
+				for (var observer: getObservers()) {
+					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.DECKSIZE, ""));
+				}
+			}
+		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && (getStage() == GameStages.PREPAREATTACKSTAGE || getStage() == GameStages.PREPAREDEFENCESTAGE)) {
+			if (player == 1) {
+				if (getPlayerStage() == 1) {
+					getFieldJ1().getGraveyard().push(selectedCard);
+					getFieldJ1().removeCard(selectedCard);
+				}
+			} else {
+				if (getPlayerStage() == 2) {
+					getFieldJ2().getGraveyard().push(selectedCard);
+					getFieldJ2().removeCard(selectedCard);
+				}
+			}
+		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
+			if (!(cv.getCard() instanceof MonsterCard)) {
+				for (var observer : observers) {
+					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+				}
+			}
+			if (getPlayer() == player) {
+				selectedCard = cv.getCard();
+			} else {
+				if (selectedCard == null) {
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
+					}
+				} else {
+					MonsterCard playerCard = (MonsterCard) selectedCard;
+					MonsterCard otherCard = (MonsterCard) cv.getCard();
+
+					if (playerCard.getAttack() > otherCard.getAttack()) {
+						int damage = playerCard.getAttack() - otherCard.getAttack();
+						statusPlayerJ2.reduceLife(damage);
+
+					} else {
+						// Perguntar para o Henrique
+					}
+
+					for (var observer: observers) {
+						observer.notify(null);
+					}
+
+				}
+			}
+		}
+	}
+
 	public void nextStage() {
 		switch (stage) {
 			case BUYCARDSSTAGE:
@@ -153,6 +223,7 @@ public class Game {
 				break;
 			case PREPAREATTACKSTAGE:
 				stage = GameStages.ATTACKSTAGE;
+				selectedCard = null;
 				if (round == 1)
 					stage = GameStages.PREPAREDEFENCESTAGE;
 				break;

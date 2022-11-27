@@ -69,35 +69,50 @@ public class GameWindow extends Application implements GameListener {
 		if (eg == null) return;
 		if (eg.getTarget() == GameEvent.Target.GWIN) {
 			switch (eg.getAction()) {
-			case INVPLAY:
-				alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Atenção !!");
-				alert.setHeaderText("Jogada inválida!!");
-				alert.setContentText("Era a vez do jogador " + eg.getArg());
-				alert.showAndWait();
-				break;
-			case MUSTCLEAN:
-				alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Atenção !!");
-				alert.setHeaderText(null);
-				alert.setContentText("Utilize o botao \"Clean\"");
-				alert.showAndWait();
-				break;
-			case ENDGAME:
-				String text = "Fim de Jogo !!\n";
-				if (Game.getInstance().getPtsJ1() > Game.getInstance().getPtsJ2()) {
-					text += "O jogador 1 ganhou !! :-)";
-				} else {
-					text += "O jogador 2 ganhou !! :-)";
-				}
-				alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Parabens !!");
-				alert.setHeaderText(null);
-				alert.setContentText(text);
-				alert.showAndWait();
-				break;
-			case REMOVESEL:
-				// Esse evento não vem para cá
+				case INVPLAY:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText("Jogada inválida!!");
+					alert.setContentText("Era a vez do jogador " + eg.getArg());
+					alert.showAndWait();
+					break;
+				case MUSTCLEAN:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Utilize o botao \"Clean\"");
+					alert.showAndWait();
+					break;
+				case ENDGAME:
+					String text = "Fim de Jogo !!\n";
+					if (Game.getInstance().getPtsJ1() > Game.getInstance().getPtsJ2()) {
+						text += "O jogador 1 ganhou !! :-)";
+					} else {
+						text += "O jogador 2 ganhou !! :-)";
+					}
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Parabens !!");
+					alert.setHeaderText(null);
+					alert.setContentText(text);
+					alert.showAndWait();
+					break;
+				case DECKSIZE:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Você não pode adicionar mais de 6 cartas na sua mão.");
+					alert.showAndWait();
+					break;
+				case NMONSTERROUND:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Você não pode adicionar mais que um monstro por round.");
+					alert.showAndWait();
+					break;
+				case UPDATEDECK:
+				case REMOVESEL:
+					// Esse evento não vem para cá
 			}
 		}
 	}
