@@ -30,9 +30,9 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		this.field = field;
 		this.player = player;
 
-		monsterNullCard = new MonsterCard("null_card", "/cards/monster_card_zone.jpg", 0, 0, 0, 0);
-		specialNullCard = new MagicCard("special_null_card", "/cards/speel_and_trap_card_zone.jpg", 0);
-		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/graveyard.jpg", 0, 0, 0, 0);
+		monsterNullCard = new MonsterCard("null_card", "/cards/monster_card_zone.jpg", 0, 0,0);
+		specialNullCard = new MagicCard("special_null_card", "/cards/speel_and_trap_card_zone.jpg");
+		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/graveyard.jpg", 0, 0, 0);
 
 		monsterCardsView = new ArrayList<>(5);
 		specialCardsView = new ArrayList<>(5);
@@ -65,7 +65,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		topGraveyardView.setCardViewObserver(this);
 
 
-		CardView cardStackView = new CardView(new SpecialCard("stack_card", "/cards/back.jpg", 0), CardType.STACKCARD);
+		CardView cardStackView = new CardView(new SpecialCard("stack_card", "/cards/back.jpg"), CardType.STACKCARD);
 		this.add(cardStackView, 5,1);
 		cardStackView.setCardViewObserver(this);
 
