@@ -6,7 +6,7 @@ public class StatusPlayer {
 	private int player;
 
 	public StatusPlayer(int player) {
-		this.life = 10;
+		this.life = 8000;
 		this.player = player;
 	}
 
