@@ -11,12 +11,10 @@ public class Field {
 	private List<Card> specialCards;
 
 	private CardStack graveyard;
-	private CardStack stack;
 
 	private List<GameListener> observers;
 
-	public Field(CardStack stack) {
-		this.stack = stack;
+	public Field() {
 
 		monsterCards = new ArrayList<>(5);
 		specialCards = new ArrayList<>(5);

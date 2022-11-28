@@ -3,11 +3,9 @@ package poo;
 public class StatusPlayer {
 
 	private int life;
-	private int player;
 
-	public StatusPlayer(int player) {
+	public StatusPlayer() {
 		this.life = 8000;
-		this.player = player;
 	}
 
 	public void addLife(int life) {

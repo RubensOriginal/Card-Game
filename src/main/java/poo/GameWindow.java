@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
@@ -34,7 +33,6 @@ public class GameWindow extends Application implements GameListener {
 
 		DeckView deckJ1 = new DeckView(1);
 		ScrollPane sd1 = new ScrollPane();
-		// sd1.setPrefSize(1024, 256);
 		sd1.setContent(deckJ1);
 		grid.add(sd1, 0, 1);
 
@@ -44,13 +42,8 @@ public class GameWindow extends Application implements GameListener {
 		FieldView placar2 = new FieldView(Game.getInstance().getFieldJ2(), 2); // Field Player Down
 		grid.add(placar2, 0, 3);
 
-//		Button butClean = new Button("Clean");
-//		grid.add(butClean, 1, 1);
-//		butClean.setOnAction(e -> Game.getInstance().removeSelected());
-
 		DeckView deckJ2 = new DeckView(2);
 		ScrollPane sd2 = new ScrollPane();
-		// sd2.setPrefSize(1024, 256);
 		sd2.setContent(deckJ2);
 		grid.add(sd2, 0, 4);
 
@@ -85,11 +78,7 @@ public class GameWindow extends Application implements GameListener {
 					break;
 				case ENDGAME:
 					String text = "Fim de Jogo !!\n";
-					if (Game.getInstance().getPtsJ1() > Game.getInstance().getPtsJ2()) {
-						text += "O jogador 1 ganhou !! :-)";
-					} else {
-						text += "O jogador 2 ganhou !! :-)";
-					}
+					text += "O jogador " + eg.getArg() + " ganhou !! :-)";
 					alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Parabens !!");
 					alert.setHeaderText(null);
@@ -129,6 +118,13 @@ public class GameWindow extends Application implements GameListener {
 					alert.setTitle("Atenção !!");
 					alert.setHeaderText(null);
 					alert.setContentText("Você precisa selecionar um monstro do jogador " + eg.getArg() +" que ainda não foi usado.");
+					alert.showAndWait();
+					break;
+				case FIELDSIZE:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Você não pode adicionar mais de 5 cartas do mesmo tipo no campo.");
 					alert.showAndWait();
 					break;
 				case UPDATEDECK:
