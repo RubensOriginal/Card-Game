@@ -214,6 +214,16 @@ public class Game {
 					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "" + player));
 				}
 			}
+
+			if (statusPlayerJ1.getLife() == 0) {
+				for (var observer: Game.getInstance().getObservers()) {
+					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "2"));
+				}
+			} else if (statusPlayerJ2.getLife() == 0) {
+				for (var observer: Game.getInstance().getObservers()) {
+					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "1"));
+				}
+			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGETWO) {
 			if (player != getPlayer()) {
 
