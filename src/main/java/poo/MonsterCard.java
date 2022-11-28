@@ -5,6 +5,7 @@ public class MonsterCard extends Card{
 	private int level;
 	private int attack;
 	private int defence;
+	private int boostDamage;
 
 	public MonsterCard(String id, String imageUrl, int level, int attack, int defence) {
 		super(id, imageUrl);
@@ -18,10 +19,26 @@ public class MonsterCard extends Card{
 	}
 
 	public int getAttack() {
-		return attack;
+		return attack + boostDamage;
 	}
 
 	public int getDefence() {
 		return defence;
+	}
+
+	public void setBoostDamage(int boostDamage) {
+		this.boostDamage = boostDamage;
+	}
+
+	public int getBoostDamage() {
+		return boostDamage;
+	}
+
+	public void addDamage(int damage) {
+		attack += damage;
+	}
+
+	public void remodeDamage(int damage) {
+		attack -= damage;
 	}
 }

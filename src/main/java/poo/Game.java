@@ -22,7 +22,7 @@ public class Game {
 
 	private int numMonstersAdded;
 
-	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, ATTACKSTAGETWO, PREPAREDEFENCESTAGE};
+	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, ATTACKSTAGETWO, PREPAREDEFENCESTAGE, APPLYMAGIC};
 
 	public static Game getInstance() {
 		if (game == null)
@@ -178,18 +178,35 @@ public class Game {
 				}
 			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && (getStage() == GameStages.PREPAREATTACKSTAGE || getStage() == GameStages.PREPAREDEFENCESTAGE)) {
-			if (player == 1) {
-				if (getPlayerStage() == 1) {
-					getFieldJ1().getGraveyard().push(selectedCard);
-					getFieldJ1().removeCard(selectedCard);
-				}
-			} else {
-				if (getPlayerStage() == 2) {
-					getFieldJ2().getGraveyard().push(selectedCard);
-					getFieldJ2().removeCard(selectedCard);
+			if (player == getPlayer()) {
+				if (cv.getCard() instanceof MagicCard) {
+					MagicCard magicCard = (MagicCard) cv.getCard();
+					if (magicCard.getSpecialEffect().getEnviroment() == MagicEnviroments.CARD) {
+						selectedCard = magicCard;
+						stage = GameStages.APPLYMAGIC;
+					} else {
+						magicCard.getSpecialEffect().applyMagic(getPlayer(), null);
+						field.removeCard(cv.getCard());
+					}
 				}
 			}
-		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
+//			if (player == 1) {
+//				if (getPlayerStage() == 1) {
+//					getFieldJ1().getGraveyard().push(selectedCard);
+//					getFieldJ1().removeCard(selectedCard);
+//				}
+//			} else {
+//				if (getPlayerStage() == 2) {
+//					getFieldJ2().getGraveyard().push(selectedCard);
+//					getFieldJ2().removeCard(selectedCard);
+//				}
+//			}
+		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.APPLYMAGIC) {
+			if (cv.getCard() instanceof MonsterCard) {
+				MagicCard magicCard = (MagicCard) selectedCard;
+				magicCard.getSpecialEffect().applyMagic(getPlayer(), cv.getCard());
+			}
+		}else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
 			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {
 
 				MonsterCard monsterCard = (MonsterCard) cv.getCard();
