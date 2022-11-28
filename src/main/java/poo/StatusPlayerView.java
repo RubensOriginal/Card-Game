@@ -38,6 +38,8 @@ public class StatusPlayerView extends GridPane implements GameListener {
 				case PREPARECOUNTERATACKSTAGE:
 					stageText.setText("Estágio Atual: Prepare o seu Contra-Ataque");
 					break;
+				case APPLYMAGIC:
+					stageText.setText("Estágio Atual: Aplique a magia na carta necessária");
 				case ATTACKSTAGE:
 					stageText.setText("Estágio Atual: ATAQUE!!!");
 					break;
@@ -74,6 +76,8 @@ public class StatusPlayerView extends GridPane implements GameListener {
 				case PREPARECOUNTERATACKSTAGE:
 					stageText.setText("Estágio Atual: Prepare o seu Contra-Ataque");
 					break;
+				case APPLYMAGIC:
+					stageText.setText("Estágio Atual: Aplique a magia na carta necessária");
 				case ATTACKSTAGE:
 					stageText.setText("Estágio Atual: ATAQUE!!!");
 					break;

@@ -124,6 +124,13 @@ public class GameWindow extends Application implements GameListener {
 					alert.setContentText("Você precisa selecionar um monstro do jogador " + eg.getArg() +".");
 					alert.showAndWait();
 					break;
+				case MONSTERUSEDPREVIOUSLY:
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Atenção !!");
+					alert.setHeaderText(null);
+					alert.setContentText("Você precisa selecionar um monstro do jogador " + eg.getArg() +" que ainda não foi usado.");
+					alert.showAndWait();
+					break;
 				case UPDATEDECK:
 				case REMOVESEL:
 					// Esse evento não vem para cá

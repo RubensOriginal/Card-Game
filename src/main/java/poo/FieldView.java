@@ -31,7 +31,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		this.player = player;
 
 		monsterNullCard = new MonsterCard("null_card", "/cards/monster_card_zone.jpg", 0, 0,0);
-		specialNullCard = new MagicCard("special_null_card", "/cards/speel_and_trap_card_zone.jpg");
+		specialNullCard = new MagicCard("special_null_card", "/cards/speel_and_trap_card_zone.jpg", null);
 		graveyardNullCard = new MonsterCard("graveyard_null_card", "/cards/graveyard.jpg", 0, 0, 0);
 
 		monsterCardsView = new ArrayList<>(5);

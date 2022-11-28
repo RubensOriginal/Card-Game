@@ -81,32 +81,75 @@ public class CardStack {
 
 
 		// Magic Cards
-		cards.add(new MagicCard("change_of_heart", "/cards/4031928.jpg"));
-		cards.add(new MagicCard("de-spell", "/cards/19159413.jpg"));
-		cards.add(new MagicCard("sword_of_dark_destruction", "/cards/37120512.jpg"));
-		cards.add(new MagicCard("remove_trap", "/cards/51482758.jpg"));
-		cards.add(new MagicCard("dark_hole", "/cards/53129443.jpg"));
-		cards.add(new MagicCard("yami", "/cards/59197169.jpg"));
-		cards.add(new MagicCard("fissure", "/cards/66788016.jpg"));
-		cards.add(new MagicCard("soul_exchange", "/cards/68005187.jpg"));
-		cards.add(new MagicCard("card_destruction", "/cards/72892473.jpg"));
-		cards.add(new MagicCard("monster_reborn", "/cards/83764719.jpg"));
-		cards.add(new MagicCard("dian_keto_the_cure_master", "/cards/84257640.jpg"));
-		cards.add(new MagicCard("last_will", "/cards/85602018.jpg"));
-		cards.add(new MagicCard("book_of_secret_arts", "/cards/91595718.jpg"));
+//		cards.add(new MagicCard("change_of_heart", "/cards/4031928.jpg"));
+//		cards.add(new MagicCard("de-spell", "/cards/19159413.jpg"));
+		cards.add(new MagicCard("sword_of_dark_destruction", "/cards/37120512.jpg", new SpecialEffect() {
+			@Override
+			public void applyMagic(int player, Card card) {
+				if (card instanceof MonsterCard) {
+					MonsterCard monsterCard = (MonsterCard) card;
+					monsterCard.addDamage(400);
+				}
+			}
+
+			@Override
+			public MagicEnviroments getEnviroment() {
+				return MagicEnviroments.CARD;
+			}
+
+			@Override
+			public boolean stayInField() {
+				return true;
+			}
+		}));
+//		cards.add(new MagicCard("remove_trap", "/cards/51482758.jpg"));
+		cards.add(new MagicCard("dark_hole", "/cards/53129443.jpg", new SpecialEffect() {
+			@Override
+			public void applyMagic(int player, Card card) {
+				List<Card> cards = Game.getInstance().getFieldJ1().getMonsterCards();
+				cards.forEach(f -> {
+					Game.getInstance().getFieldJ1().getGraveyard().push(f);
+					Game.getInstance().getFieldJ1().removeCard(f);
+				});
+
+				cards = Game.getInstance().getFieldJ2().getMonsterCards();
+				cards.forEach(f -> {
+					Game.getInstance().getFieldJ2().getGraveyard().push(f);
+					Game.getInstance().getFieldJ2().removeCard(f);
+				});
+			}
+
+			@Override
+			public MagicEnviroments getEnviroment() {
+				return MagicEnviroments.PLAYER;
+			}
+
+			@Override
+			public boolean stayInField() {
+				return false;
+			}
+		}));
+//		cards.add(new MagicCard("yami", "/cards/59197169.jpg"));
+//		cards.add(new MagicCard("fissure", "/cards/66788016.jpg"));
+//		cards.add(new MagicCard("soul_exchange", "/cards/68005187.jpg"));
+//		cards.add(new MagicCard("card_destruction", "/cards/72892473.jpg"));
+//		cards.add(new MagicCard("monster_reborn", "/cards/83764719.jpg"));
+//		cards.add(new MagicCard("dian_keto_the_cure_master", "/cards/84257640.jpg"));
+//		cards.add(new MagicCard("last_will", "/cards/85602018.jpg"));
+//		cards.add(new MagicCard("book_of_secret_arts", "/cards/91595718.jpg"));
 
 
 
 
 		// Trap Cards
-		cards.add(new TrapCard("trap_hole", "/cards/4206964.jpg"));
-		cards.add(new TrapCard("waboku", "/cards/12607053.jpg"));
-		cards.add(new TrapCard("reverse_trap", "/cards/77622396.jpg"));
-		cards.add(new TrapCard("reinforcements", "/cards/17814387.jpg"));
-		cards.add(new TrapCard("castle_walls", "/cards/44209392.jpg"));
-		cards.add(new TrapCard("dragon_capture_jar", "/cards/50045299.jpg"));
-		cards.add(new TrapCard("ultimate_offering", "/cards/80604092.jpg"));
-		cards.add(new TrapCard("two_pronged_attack", "/cards/83887306.jpg"));
+//		cards.add(new TrapCard("trap_hole", "/cards/4206964.jpg"));
+//		cards.add(new TrapCard("waboku", "/cards/12607053.jpg"));
+//		cards.add(new TrapCard("reverse_trap", "/cards/77622396.jpg"));
+//		cards.add(new TrapCard("reinforcements", "/cards/17814387.jpg"));
+//		cards.add(new TrapCard("castle_walls", "/cards/44209392.jpg"));
+//		cards.add(new TrapCard("dragon_capture_jar", "/cards/50045299.jpg"));
+//		cards.add(new TrapCard("ultimate_offering", "/cards/80604092.jpg"));
+//		cards.add(new TrapCard("two_pronged_attack", "/cards/83887306.jpg"));
 
 
 		return cards;

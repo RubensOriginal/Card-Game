@@ -22,7 +22,7 @@ public class Game {
 
 	private int numMonstersAdded;
 
-	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, ATTACKSTAGETWO, PREPAREDEFENCESTAGE};
+	public enum GameStages { BUYCARDSSTAGE, PREPAREATTACKSTAGE, PREPARECOUNTERATACKSTAGE, ATTACKSTAGE, ATTACKSTAGETWO, PREPAREDEFENCESTAGE, APPLYMAGIC};
 
 	public static Game getInstance() {
 		if (game == null)
@@ -178,24 +178,56 @@ public class Game {
 				}
 			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && (getStage() == GameStages.PREPAREATTACKSTAGE || getStage() == GameStages.PREPAREDEFENCESTAGE)) {
-			if (player == 1) {
-				if (getPlayerStage() == 1) {
-					getFieldJ1().getGraveyard().push(selectedCard);
-					getFieldJ1().removeCard(selectedCard);
-				}
-			} else {
-				if (getPlayerStage() == 2) {
-					getFieldJ2().getGraveyard().push(selectedCard);
-					getFieldJ2().removeCard(selectedCard);
+			if (player == getPlayer()) {
+				if (cv.getCard() instanceof MagicCard) {
+					MagicCard magicCard = (MagicCard) cv.getCard();
+					if (!magicCard.isUsed()) {
+						if (magicCard.getSpecialEffect().getEnviroment() == MagicEnviroments.CARD) {
+							selectedCard = magicCard;
+							stage = GameStages.APPLYMAGIC;
+						} else {
+							magicCard.getSpecialEffect().applyMagic(getPlayer(), null);
+							if (!magicCard.getSpecialEffect().stayInField())
+								field.removeCard(cv.getCard());
+						}
+					}
 				}
 			}
-		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
+//			if (player == 1) {
+//				if (getPlayerStage() == 1) {
+//					getFieldJ1().getGraveyard().push(selectedCard);
+//					getFieldJ1().removeCard(selectedCard);
+//				}
+//			} else {
+//				if (getPlayerStage() == 2) {
+//					getFieldJ2().getGraveyard().push(selectedCard);
+//					getFieldJ2().removeCard(selectedCard);
+//				}
+//			}
+		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.APPLYMAGIC) {
+			if (cv.getCard() instanceof MonsterCard) {
+				MagicCard magicCard = (MagicCard) selectedCard;
+				magicCard.getSpecialEffect().applyMagic(getPlayer(), cv.getCard());
+				magicCard.setUsed(true);
+				if (!magicCard.getSpecialEffect().stayInField())
+					field.removeCard(cv.getCard());
+			}
+		}else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
 			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {
-				selectedCard = cv.getCard();
-				stage = GameStages.ATTACKSTAGETWO;
-				for (var observer : observers) {
-					observer.notify(null);
+
+				MonsterCard monsterCard = (MonsterCard) cv.getCard();
+				if (!monsterCard.isUsed()) {
+					selectedCard = cv.getCard();
+					stage = GameStages.ATTACKSTAGETWO;
+					for (var observer : observers) {
+						observer.notify(null);
+					}
+				} else {
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.MONSTERUSEDPREVIOUSLY, "" + player));
+					}
 				}
+
 			} else {
 				for (var observer : observers) {
 					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "" + player));
@@ -210,16 +242,43 @@ public class Game {
 					int damage = playerCard.getAttack() - otherCard.getAttack();
 					if (getPlayer() == 1) {
 						statusPlayerJ2.reduceLife(damage);
+						fieldJ2.getGraveyard().push(otherCard);
+						fieldJ2.removeCard(otherCard);
 					} else {
 						statusPlayerJ1.reduceLife(damage);
+						fieldJ1.getGraveyard().push(otherCard);
+						fieldJ1.removeCard(otherCard);
 					}
 
-					selectedCard = null;
-					stage = GameStages.ATTACKSTAGE;
+					playerCard.setUsed(true);
 
+				} else if (playerCard.getAttack() == otherCard.getAttack()) {
+					if (getPlayer() == 1) {
+						fieldJ1.getGraveyard().push(playerCard);
+						fieldJ1.removeCard(playerCard);
+						fieldJ2.getGraveyard().push(otherCard);
+						fieldJ2.removeCard(otherCard);
+					} else {
+						fieldJ1.getGraveyard().push(otherCard);
+						fieldJ1.removeCard(otherCard);
+						fieldJ2.getGraveyard().push(playerCard);
+						fieldJ2.removeCard(playerCard);
+					}
 				} else {
-					// Perguntar para o Henrique
+					int damage =  otherCard.getAttack() - playerCard.getAttack();
+					if (getPlayer() == 1) {
+						statusPlayerJ1.reduceLife(damage);
+						fieldJ1.getGraveyard().push(playerCard);
+						fieldJ1.removeCard(playerCard);
+					} else {
+						statusPlayerJ2.reduceLife(damage);
+						fieldJ2.getGraveyard().push(playerCard);
+						fieldJ2.removeCard(playerCard);
+					}
 				}
+
+				selectedCard = null;
+				stage = GameStages.ATTACKSTAGE;
 
 				for (var observer : observers) {
 					observer.notify(null);
@@ -227,11 +286,11 @@ public class Game {
 
 				if (statusPlayerJ1.getLife() == 0) {
 					for (var observer: Game.getInstance().getObservers()) {
-						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "2"));
 					}
 				} else if (statusPlayerJ2.getLife() == 0) {
 					for (var observer: Game.getInstance().getObservers()) {
-						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "1"));
 					}
 				}
 
@@ -308,10 +367,12 @@ public class Game {
 				break;
 			case PREPAREDEFENCESTAGE:
 				stage = GameStages.BUYCARDSSTAGE;
-				if (player == 1)
+				if (player == 1) {
 					player = 2;
-				else {
+					fieldJ1.setCardsAsNonUsed();
+				} else {
 					player = 1;
+					fieldJ2.setCardsAsNonUsed();
 					round++;
 				}
 				break;
