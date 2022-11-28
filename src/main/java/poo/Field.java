@@ -73,4 +73,13 @@ public class Field {
 		}
 	}
 
+	public void setCardsAsNonUsed() {
+		for (Card card: monsterCards) {
+			if (card instanceof MonsterCard) {
+				MonsterCard monsterCard = (MonsterCard) card;
+				monsterCard.setUsed(false);
+			}
+		}
+	}
+
 }

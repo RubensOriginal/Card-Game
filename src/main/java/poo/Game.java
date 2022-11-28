@@ -228,12 +228,34 @@ public class Game {
 					}
 
 					playerCard.setUsed(true);
-					selectedCard = null;
-					stage = GameStages.ATTACKSTAGE;
 
+				} else if (playerCard.getAttack() == otherCard.getAttack()) {
+					if (getPlayer() == 1) {
+						fieldJ1.getGraveyard().push(playerCard);
+						fieldJ1.removeCard(playerCard);
+						fieldJ2.getGraveyard().push(otherCard);
+						fieldJ2.removeCard(otherCard);
+					} else {
+						fieldJ1.getGraveyard().push(otherCard);
+						fieldJ1.removeCard(otherCard);
+						fieldJ2.getGraveyard().push(playerCard);
+						fieldJ2.removeCard(playerCard);
+					}
 				} else {
-					// Perguntar para o Henrique
+					int damage =  otherCard.getAttack() - playerCard.getAttack();
+					if (getPlayer() == 1) {
+						statusPlayerJ1.reduceLife(damage);
+						fieldJ1.getGraveyard().push(playerCard);
+						fieldJ1.removeCard(playerCard);
+					} else {
+						statusPlayerJ2.reduceLife(damage);
+						fieldJ2.getGraveyard().push(playerCard);
+						fieldJ2.removeCard(playerCard);
+					}
 				}
+
+				selectedCard = null;
+				stage = GameStages.ATTACKSTAGE;
 
 				for (var observer : observers) {
 					observer.notify(null);
@@ -241,11 +263,11 @@ public class Game {
 
 				if (statusPlayerJ1.getLife() == 0) {
 					for (var observer: Game.getInstance().getObservers()) {
-						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "2"));
 					}
 				} else if (statusPlayerJ2.getLife() == 0) {
 					for (var observer: Game.getInstance().getObservers()) {
-						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, player + ""));
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "1"));
 					}
 				}
 
@@ -322,10 +344,12 @@ public class Game {
 				break;
 			case PREPAREDEFENCESTAGE:
 				stage = GameStages.BUYCARDSSTAGE;
-				if (player == 1)
+				if (player == 1) {
 					player = 2;
-				else {
+					fieldJ1.setCardsAsNonUsed();
+				} else {
 					player = 1;
+					fieldJ2.setCardsAsNonUsed();
 					round++;
 				}
 				break;
