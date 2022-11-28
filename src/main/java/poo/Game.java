@@ -181,12 +181,15 @@ public class Game {
 			if (player == getPlayer()) {
 				if (cv.getCard() instanceof MagicCard) {
 					MagicCard magicCard = (MagicCard) cv.getCard();
-					if (magicCard.getSpecialEffect().getEnviroment() == MagicEnviroments.CARD) {
-						selectedCard = magicCard;
-						stage = GameStages.APPLYMAGIC;
-					} else {
-						magicCard.getSpecialEffect().applyMagic(getPlayer(), null);
-						field.removeCard(cv.getCard());
+					if (!magicCard.isUsed()) {
+						if (magicCard.getSpecialEffect().getEnviroment() == MagicEnviroments.CARD) {
+							selectedCard = magicCard;
+							stage = GameStages.APPLYMAGIC;
+						} else {
+							magicCard.getSpecialEffect().applyMagic(getPlayer(), null);
+							if (!magicCard.getSpecialEffect().stayInField())
+								field.removeCard(cv.getCard());
+						}
 					}
 				}
 			}
@@ -205,6 +208,9 @@ public class Game {
 			if (cv.getCard() instanceof MonsterCard) {
 				MagicCard magicCard = (MagicCard) selectedCard;
 				magicCard.getSpecialEffect().applyMagic(getPlayer(), cv.getCard());
+				magicCard.setUsed(true);
+				if (!magicCard.getSpecialEffect().stayInField())
+					field.removeCard(cv.getCard());
 			}
 		}else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) {
 			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {

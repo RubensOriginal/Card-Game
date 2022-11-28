@@ -96,6 +96,11 @@ public class CardStack {
 			public MagicEnviroments getEnviroment() {
 				return MagicEnviroments.CARD;
 			}
+
+			@Override
+			public boolean stayInField() {
+				return true;
+			}
 		}));
 //		cards.add(new MagicCard("remove_trap", "/cards/51482758.jpg"));
 		cards.add(new MagicCard("dark_hole", "/cards/53129443.jpg", new SpecialEffect() {
@@ -117,6 +122,11 @@ public class CardStack {
 			@Override
 			public MagicEnviroments getEnviroment() {
 				return MagicEnviroments.PLAYER;
+			}
+
+			@Override
+			public boolean stayInField() {
+				return false;
 			}
 		}));
 //		cards.add(new MagicCard("yami", "/cards/59197169.jpg"));
