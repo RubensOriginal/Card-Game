@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FieldView extends GridPane implements CardViewListener, GameListener {
-	// private TextField ptsJ1, ptsJ2;
 
 	private Field field;
 	private int player;
@@ -37,11 +36,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		monsterCardsView = new ArrayList<>(5);
 		specialCardsView = new ArrayList<>(5);
 
-//		for (int i = 0; i < 5; i++) {
-//			monsterCards.add(monsterNullCard);
-//			specialCards.add(specialNullCard);
-//		}
-
 		topGraveyard = graveyardNullCard;
 
 		this.setAlignment(Pos.CENTER);
@@ -59,7 +53,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 			this.add(card, i, 1);
 		}
 
-		// topGraveyard = new MonsterCard("null_card", "/cards/back.jpg", 0, 0, 0, 0);
 		topGraveyardView = new CardView(topGraveyard, CardType.NULLCARD);
 		this.add(topGraveyardView, 5,0);
 		topGraveyardView.setCardViewObserver(this);
@@ -80,17 +73,7 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 
 		Game.getInstance().addGameListener(this);
 		field.addGameListener(this);
-//
-//		ptsJ1 = new TextField();
-//		ptsJ2 = new TextField();
-//
-//		ptsJ1.setText("" + Game.getInstance().getPtsJ1());
-//		ptsJ2.setText("" + Game.getInstance().getPtsJ2());
-//
-//		this.add(new Label("Jogador 1:"), 0, 0);
-//		this.add(ptsJ1, 1, 0);
-//		this.add(new Label("Jogador 2:"), 0, 1);
-//		this.add(ptsJ2, 1, 1);
+
 	}
 
 	@Override
@@ -116,7 +99,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 			} else {
 				card = new CardView(monsterNullCard, CardType.NULLCARD);
 			}
-			// monsterCardView.add(card);
 
 			getChildren().remove(monsterCardsView.get(i));
 
@@ -130,8 +112,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 				card = new CardView(specialNullCard, CardType.NULLCARD);
 			}
 
-			// specialCardView.add(card);
-
 			getChildren().remove(specialCardsView.get(i));
  
 			this.add(card, i, 1);
@@ -142,9 +122,6 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 		monsterCardsView = newMonsterCardsView;
 		specialCardsView = newSpecialCardsView;
 
-		
-//		ptsJ1.setText("" + Game.getInstance().getPtsJ1());
-//		ptsJ2.setText("" + Game.getInstance().getPtsJ2());
 	}
 
 	@Override
@@ -154,7 +131,5 @@ public class FieldView extends GridPane implements CardViewListener, GameListene
 
 		Game.getInstance().playField(field, cv, player);
 
-		// cDeck.setSelectedCard(selectedCard);
-		// Game.getInstance().play(cDeck);
 	}
 }

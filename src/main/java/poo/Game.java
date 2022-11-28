@@ -8,12 +8,9 @@ import java.util.List;
 
 public class Game {
 	private static Game game;
-	private int ptsJ1, ptsJ2;
 	private CardDeck deckJ1, deckJ2;
 	private Field fieldJ1, fieldJ2;
 	private StatusPlayer statusPlayerJ1, statusPlayerJ2;
-	private int playerStage;
-	private int jogadas;
 	private List<GameListener> observers;
 	private int round;
 	private int player;
@@ -31,36 +28,17 @@ public class Game {
 	}
 
 	private Game() {
-		ptsJ1 = 0;
-		ptsJ2 = 0;
 		round = 1;
 		player = 1;
 		numMonstersAdded = 0;
 		stage = GameStages.BUYCARDSSTAGE;
-		statusPlayerJ1 = new StatusPlayer(1);
-		statusPlayerJ2 = new StatusPlayer(2);
+		statusPlayerJ1 = new StatusPlayer();
+		statusPlayerJ2 = new StatusPlayer();
 		deckJ1 = new CardDeck(1);
 		deckJ2 = new CardDeck(2);
-		fieldJ1 = new Field(null);
-		fieldJ2 = new Field(null);
-		playerStage = 1;
-		jogadas = CardDeck.NCARDS;
+		fieldJ1 = new Field();
+		fieldJ2 = new Field();
 		observers = new LinkedList<>();
-	}
-
-	private void nextPlayer() {
-		playerStage++;
-		if (playerStage == 4) {
-			playerStage = 1;
-		}
-	}
-
-	public int getPtsJ1() {
-		return ptsJ1;
-	}
-
-	public int getPtsJ2() {
-		return ptsJ2;
 	}
 
 	public CardDeck getDeckJ1() {
@@ -81,10 +59,6 @@ public class Game {
 
 	public StatusPlayer getStatusPlayerJ2() {
 		return statusPlayerJ2;
-	}
-
-	public int getPlayerStage() {
-		return playerStage;
 	}
 
 	public int getPlayer() {
@@ -121,8 +95,9 @@ public class Game {
 					player = 2;
 
 				} catch (SizeLimitExceededException e) {
-					// Add an alert here
-					throw new RuntimeException(e);
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.FIELDSIZE, ""));
+					}
 				}
 
 				for (var observer : observers) {
@@ -149,8 +124,9 @@ public class Game {
 					player = 1;
 
 				} catch (SizeLimitExceededException e) {
-					// Add an alert here
-					throw new RuntimeException(e);
+					for (var observer : observers) {
+						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.FIELDSIZE, ""));
+					}
 				}
 
 				for (var observer : observers) {
@@ -161,9 +137,6 @@ public class Game {
 	}
 
 	public void playField(Field field, CardView cv, int player) {
-//		for (var observer: getObservers()) {
-//			observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.PRINTDATA, (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.ATTACKSTAGE) + "\n" + (player == getPlayer()) + ""));
-//		}
 
 		if (cv.getCardType() == CardView.CardType.STACKCARD && getStage() == GameStages.BUYCARDSSTAGE) {
 			try {
@@ -193,17 +166,6 @@ public class Game {
 					}
 				}
 			}
-//			if (player == 1) {
-//				if (getPlayerStage() == 1) {
-//					getFieldJ1().getGraveyard().push(selectedCard);
-//					getFieldJ1().removeCard(selectedCard);
-//				}
-//			} else {
-//				if (getPlayerStage() == 2) {
-//					getFieldJ2().getGraveyard().push(selectedCard);
-//					getFieldJ2().removeCard(selectedCard);
-//				}
-//			}
 		} else if (cv.getCardType() == CardView.CardType.FIELDCARD && getStage() == GameStages.APPLYMAGIC) {
 			if (cv.getCard() instanceof MonsterCard) {
 				MagicCard magicCard = (MagicCard) selectedCard;
@@ -306,41 +268,6 @@ public class Game {
 				}
 			}
 		}
-
-
-//			for (var observer : observers) {
-//				observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
-//			}
-//			if (!(cv.getCard() instanceof MonsterCard)) {
-//				for (var observer : observers) {
-//					observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
-//				}
-//			}
-//			if (getPlayer() == player) {
-//				selectedCard = cv.getCard();
-//			} else {
-//				if (selectedCard == null) {
-//					for (var observer : observers) {
-//						observer.notify(new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVALIDATTACK, "1"));
-//					}
-//				} else {
-//					MonsterCard playerCard = (MonsterCard) selectedCard;
-//					MonsterCard otherCard = (MonsterCard) cv.getCard();
-//
-//					if (playerCard.getAttack() > otherCard.getAttack()) {
-//						int damage = playerCard.getAttack() - otherCard.getAttack();
-//						statusPlayerJ2.reduceLife(damage);
-//
-//					} else {
-//						// Perguntar para o Henrique
-//					}
-//
-//					for (var observer: observers) {
-//						observer.notify(null);
-//					}
-//
-//				}
-//			}
 	}
 
 	public void nextStage() {
@@ -381,100 +308,6 @@ public class Game {
 		for (var observer : observers) {
 			observer.notify(null);
 		}
-	}
-
-//	public void play(CardDeck deckAcionado) {
-//		GameEvent gameEvent = null;
-//		if (playerStage == 3) {
-//			gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.MUSTCLEAN, "");
-//			for (var observer : observers) {
-//				observer.notify(gameEvent);
-//			}
-//			return;
-//		}
-//		if (deckAcionado == deckJ1) {
-//			if (playerStage != 1) {
-//				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "2");
-//				for (var observer : observers) {
-//					observer.notify(gameEvent);
-//				}
-//			} else {
-//				// Vira a carta
-//				Card J1Card = deckJ1.getSelectedCard();
-//				deckJ1.removeSel();
-//
-//				try {
-//					fieldJ1.addCard(J1Card);
-//
-//					if (J1Card instanceof MonsterCard)
-//						nextPlayer();
-//				} catch (SizeLimitExceededException e) {
-//					// Add an alert here
-//					throw new RuntimeException(e);
-//				}
-//
-//				for (var observer : observers) {
-//					if (observer instanceof FieldView)
-//						observer.notify(gameEvent);
-//				}
-//			}
-//		} else if (deckAcionado == deckJ2) {
-//			if (playerStage != 2) {
-//				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "1");
-//				for (var observer : observers) {
-//					observer.notify(gameEvent);
-//				}
-//			} else {
-//				// Vira a carta
-//
-//				Card J2Card = deckJ2.getSelectedCard();
-//				deckJ2.removeSel();
-//
-//				try {
-//					fieldJ2.addCard(J2Card);
-//
-//					if (J2Card instanceof MonsterCard) {
-//						nextPlayer();
-//						nextPlayer();
-//					}
-//				} catch (SizeLimitExceededException e) {
-//					// Add an alert here
-//					throw new RuntimeException(e);
-//				}
-//
-//				// deckJ2.getSelectedCard().flip();
-//				// // Verifica quem ganhou a rodada
-//				// if (deckJ1.getSelectedCard().getValue() > deckJ2.getSelectedCard().getValue()) {
-//				// 	ptsJ1++;
-//				// } else if (deckJ1.getSelectedCard().getValue() < deckJ2.getSelectedCard().getValue()) {
-//				// 	ptsJ2++;
-//				// }
-//
-//
-//				for (var observer : observers) {
-//					observer.notify(gameEvent);
-//				}
-//				// Próximo jogador
-//			}
-//		}
-//	}
-
-	// Acionada pelo botao de limpar
-	public void removeSelected() {
-		GameEvent gameEvent = null;
-		if (playerStage != 3) {
-			return;
-		}
-		jogadas--;
-		if (jogadas == 0) {
-			gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "");
-			for (var observer : observers) {
-				observer.notify(gameEvent);
-			}
-		}
-		deckJ1.removeSel();
-		deckJ2.removeSel();
-		nextPlayer();
 	}
 	
 	public void addGameListener(GameListener listener) {

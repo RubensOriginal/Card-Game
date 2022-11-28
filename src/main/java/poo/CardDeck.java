@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CardDeck {
-	public static final int NCARDS = 6;
 	private List<Card> cartas;
 
 	private CardStack stack;
@@ -30,23 +29,11 @@ public class CardDeck {
 		for (int i = 0; i < 5; i++)
 			cartas.add(stack.pop());
 
-//		Random r = new Random();
-//		for (int i = 0; i < NCARDS; i++) {
-//			int n = r.nextInt(10) + 1;
-//			Card c = new Card("C" + n, "img" + n, n);
-//			c.flip();
-//			cartas.add(c);
-//		}
-
 		observers = new LinkedList<>();
 	}
 
 	public List<Card> getCards() {
 		return Collections.unmodifiableList(cartas);
-	}
-
-	public int getNumberOfCards() {
-		return cartas.size();
 	}
 
 	public void removeSel() {
@@ -67,10 +54,6 @@ public class CardDeck {
 
 	public Card getSelectedCard() {
 		return selected;
-	}
-
-	public int getPlayer() {
-		return player;
 	}
 
 	public void addGameListener(GameListener listener) {
