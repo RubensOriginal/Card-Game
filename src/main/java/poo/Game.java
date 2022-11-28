@@ -178,7 +178,26 @@ public class Game {
 			if (player == getPlayer() && cv.getCard() instanceof MonsterCard) {
 
 				MonsterCard monsterCard = (MonsterCard) cv.getCard();
-				if (!monsterCard.isUsed()) {
+
+				Field otherPlayerField;
+				if (getPlayer() == 1)
+					otherPlayerField = fieldJ2;
+				else
+					otherPlayerField= fieldJ2;
+
+				if (otherPlayerField.getMonsterCards().size() == 0) {
+					if (!monsterCard.isUsed()) {
+						monsterCard.setUsed(true);
+						if (getPlayer() == 1) {
+							statusPlayerJ2.reduceLife(monsterCard.getAttack());
+						} else {
+							statusPlayerJ1.reduceLife(monsterCard.getAttack());
+						}
+					}
+					for (var observer : observers) {
+						observer.notify(null);
+					}
+				} else if (!monsterCard.isUsed()) {
 					selectedCard = cv.getCard();
 					stage = GameStages.ATTACKSTAGETWO;
 					for (var observer : observers) {
